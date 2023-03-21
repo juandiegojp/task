@@ -23,8 +23,10 @@ def signup(request):
                     'error': 'Username already exists'
                 })
         else:
-            return HttpResponse('Passwords do not match')
-
+            return render(request, 'signup.html', {
+                    'form': UserCreationForm,
+                    'error': 'Passwords do not match'
+                })
 
 def home(request):
     return render(request, 'home.html')
