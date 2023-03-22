@@ -6,7 +6,7 @@ class Task(models.Model):
     title = models.CharField(max_length=100)
     descripcion = models.TextField(blank=True)
     created = models.DateTimeField(auto_now_add=True)
-    datecompleted = models.DateTimeField(null=True)
+    datecompleted = models.DateTimeField(null=True, blank=True)
     important = models.BooleanField(default=False)
     user = models.ForeignKey(
         User,
@@ -14,5 +14,5 @@ class Task(models.Model):
     )
     
     def __str__(self):
-        return f'{self.title} : {self.user.username}'
+        return f'{self.title} - {self.user.username}'
     

@@ -2,4 +2,19 @@
 
 {% block title %}Task{% endblock title %}
 
-{% block content %}Aquí van las tareas.{% endblock content %}
+{% block content %}
+<h2 class="mb-2 text-lg font-semibold text-gray-900 dark:text-white">Tareas creadas:</h2>
+<ul class="max-w-md space-y-1 text-gray-500 list-none dark:text-gray-400">
+    {% for task in tasks %}
+    <li>
+        {% if task.important %}
+        <i class="fa fa-check" aria-hidden="true"></i>{{ task.title }}
+        {% else %}
+        {{ task.title }}
+        {% endif %}
+        <em class="font-italic">{{ task.user.username }}</em>
+    </li>
+    {% endfor %}
+</ul>
+
+{% endblock content %}

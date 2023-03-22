@@ -5,6 +5,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.shortcuts import render, redirect
 from django.db import IntegrityError
 from .forms import TaskForm
+from .models import Task
 
 
 def home(request):
@@ -63,7 +64,10 @@ def signin(request):
 
 
 def task(request):
-    return render(request, 'task.html')
+    tasks = Task.objects.filter(user=request.user, datecompleted__isnull=True)
+    return render(request, 'task.html', {
+        'tasks' : tasks
+    })
 
 def create_task(request):
     if request.method == 'GET':
