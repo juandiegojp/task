@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404
 from .forms import TaskForm
 from .models import Task
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 
 
 def home(request):
@@ -65,18 +66,23 @@ def signin(request):
             return redirect('home')
 
 
+@login_required
 def tasks(request):
     tasks = Task.objects.filter(user=request.user, datecompleted__isnull=True)
     return render(request, 'task.html', {
         'tasks': tasks
     })
 
+
+@login_required
 def tasks_completed(request):
     tasks = Task.objects.filter(user=request.user, datecompleted__isnull=False).order_by('-datecompleted')
     return render(request, 'task.html', {
         'tasks': tasks
     })
 
+
+@login_required
 def create_task(request):
     if request.method == 'GET':
         return render(request, 'create_task.html', {
@@ -94,7 +100,7 @@ def create_task(request):
                 'error': 'Provide valide data'
             })
 
-
+@login_required
 def task_detail(request, task_id):
     if request.method == 'GET':
         task = get_object_or_404(Task, pk=task_id, user=request.user)
@@ -116,7 +122,7 @@ def task_detail(request, task_id):
                 'error': "Error updating task"
             })
 
-
+@login_required
 def task_complete(request, task_id):
     task = get_object_or_404(Task, pk=task_id, user=request.user)
     if request.method == 'POST':
@@ -124,7 +130,7 @@ def task_complete(request, task_id):
         task.save()
         return redirect('tasks')
 
-
+@login_required
 def task_delete(request, task_id):
     task = get_object_or_404(Task, pk=task_id, user=request.user)
     if request.method == 'POST':
