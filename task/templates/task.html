@@ -4,7 +4,7 @@
 {% block title %}Task{% endblock title %}
 
 {% block content %}
-<h2 class="mb-2 text-lg font-semibold text-gray-900 dark:text-white">Tareas pendientes:</h2>
+<h2 class="mb-2 text-lg font-semibold text-gray-900 dark:text-white">Tareas:</h2>
 <ul class="max-w-md space-y-1 text-gray-500 list-none dark:text-gray-400">
     {% for task in tasks %}
     {% if task.datecompleted  %}
@@ -16,6 +16,20 @@
             {{task.descripcion}} </p>
         <p class="italic"> Tarea creada: {{ task.created }} </p>
         <p class="italic">Tarea completada: {{ task.datecompleted }} ({{ task.datecompleted|naturaltime }}) </p>
+        <form action="{% url 'task_delete' task.id %}" method="post">
+            {% csrf_token %}
+            <button
+              type="submit"
+              class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800"
+            >
+              Delete
+            </button>
+            <a href="{% url 'task_detail' task.id %}"
+            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+          >
+            Update
+          </a>
+          </form>
     </div>
     {% else %}
         <li>
@@ -28,5 +42,23 @@
         {% endif %}
     {% endfor %}
 </ul>
+
+<div class="pagination">
+  <span class="step-links">
+      {% if tasks.has_previous %}
+          <a href="?page=1">&laquo; first</a>
+          <a href="?page={{ tasks.previous_page_number }}">previous</a>
+      {% endif %}
+
+      <span class="current">
+          Page {{ tasks.number }} of {{ tasks.paginator.num_pages }}.
+      </span>
+
+      {% if tasks.has_next %}
+          <a href="?page={{ tasks.next_page_number }}">next</a>
+          <a href="?page={{ tasks.paginator.num_pages }}">last &raquo;</a>
+      {% endif %}
+  </span>
+</div>
 
 {% endblock content %}

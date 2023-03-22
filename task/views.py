@@ -9,6 +9,8 @@ from .forms import TaskForm
 from .models import Task
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+
 
 
 def home(request):
@@ -68,9 +70,13 @@ def signin(request):
 
 @login_required
 def tasks(request):
-    tasks = Task.objects.filter(user=request.user, datecompleted__isnull=True)
+    tasks = Task.objects.filter(user=request.user, datecompleted__isnull=True).order_by('-important')
+    paginator = Paginator(tasks, 5)
+    
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     return render(request, 'task.html', {
-        'tasks': tasks
+        'tasks': page_obj
     })
 
 
