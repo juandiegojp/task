@@ -2,15 +2,13 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.contrib.auth import login, logout, authenticate
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.db import IntegrityError
-from django.shortcuts import get_object_or_404
 from .forms import TaskForm
 from .models import Task
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-
 
 
 def home(request):
@@ -70,9 +68,10 @@ def signin(request):
 
 @login_required
 def tasks(request):
-    tasks = Task.objects.filter(user=request.user, datecompleted__isnull=True).order_by('-important')
+    tasks = Task.objects.filter(
+        user=request.user, datecompleted__isnull=True).order_by('-important')
     paginator = Paginator(tasks, 5)
-    
+
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, 'task.html', {
@@ -82,9 +81,10 @@ def tasks(request):
 
 @login_required
 def tasks_completed(request):
-    tasks = Task.objects.filter(user=request.user, datecompleted__isnull=False).order_by('-datecompleted')
+    tasks = Task.objects.filter(
+        user=request.user, datecompleted__isnull=False).order_by('-datecompleted')
     paginator = Paginator(tasks, 5)
-    
+
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, 'task.html', {
@@ -110,6 +110,7 @@ def create_task(request):
                 'error': 'Provide valide data'
             })
 
+
 @login_required
 def task_detail(request, task_id):
     if request.method == 'GET':
@@ -132,6 +133,7 @@ def task_detail(request, task_id):
                 'error': "Error updating task"
             })
 
+
 @login_required
 def task_complete(request, task_id):
     task = get_object_or_404(Task, pk=task_id, user=request.user)
@@ -139,6 +141,7 @@ def task_complete(request, task_id):
         task.datecompleted = timezone.now()
         task.save()
         return redirect('tasks')
+
 
 @login_required
 def task_delete(request, task_id):
