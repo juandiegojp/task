@@ -66,6 +66,18 @@ def task(request):
     return render(request, 'task.html')
 
 def create_task(request):
-    return render(request, 'create_task.html', {
-        'form' : TaskForm 
+    if request.method == 'GET':
+        return render(request, 'create_task.html', {
+            'form' : TaskForm 
     })
+    else:
+        try: 
+            new_task = TaskForm(request.POST).save(commit=False)
+            new_task.user = request.user
+            new_task.save()
+            return redirect('task')
+        except ValueError:
+            return render(request, 'create_task.html', {
+                'form': TaskForm,
+                'error': 'Provide valide data'
+            })
