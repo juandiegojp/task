@@ -1,5 +1,5 @@
 {% extends 'base.html' %} 
-{% load i18n %}
+{% load humanize %}
 
 {% block title %}Task{% endblock title %}
 
@@ -7,16 +7,25 @@
 <h2 class="mb-2 text-lg font-semibold text-gray-900 dark:text-white">Tareas pendientes:</h2>
 <ul class="max-w-md space-y-1 text-gray-500 list-none dark:text-gray-400">
     {% for task in tasks %}
-    <li>
-        {% if task.important %}
-        <a href="{% url 'task_detail' task.id %}"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>{{ task.title }}</a>
-        {% else %}
-        <a href="{% url 'task_detail' task.id %}">{{ task.title }}</a>
+    {% if task.datecompleted  %}
+
+    <div class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+            {{task.title}} </h5>
+        <p class="font-normal text-gray-700 dark:text-gray-400">
+            {{task.descripcion}} </p>
+        <p class="italic"> Tarea creada: {{ task.created }} </p>
+        <p class="italic">Tarea completada: {{ task.datecompleted }} ({{ task.datecompleted|naturaltime }}) </p>
+    </div>
+    {% else %}
+        <li>
+            {% if task.important %}
+            <a href="{% url 'task_detail' task.id %}"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>{{ task.title }}</a>
+            {% else %}
+            <a href="{% url 'task_detail' task.id %}">{{ task.title }}</a>
+            {% endif %}
+        </li>
         {% endif %}
-        {% language 'es' %}
-        <em class="font-italic">{{ task.datecompleted|date:'d M Y H:i'}}</em>
-        {% endlanguage %}
-    </li>
     {% endfor %}
 </ul>
 
