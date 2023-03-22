@@ -27,10 +27,8 @@
         class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl px-4 md:px-6 py-2.5"
       >
         <a href="/"><i class="fa fa-fw fa-home"></i>Home</a>
-        <a href="/task">
-          <i class="fa fa-thumb-tack" aria-hidden="true"></i>Task</a
-        >
-        <a href="/task/create"> <i class="fa fa-fw fa-search"></i>Search</a>
+        <a href="/task/create"> <i class="fa fa-plus" aria-hidden="true"></i>Nueva tarea</a>
+        <a href="/tasks"><i class="fa fa-thumb-tack" aria-hidden="true"></i>Pendientes</a>
         <div class="justify-around">
           {% if user.is_authenticated %}
           <a href="#"><i class="fa fa-fw fa-user"></i>{{ user.username }}</a>

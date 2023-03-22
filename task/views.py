@@ -7,6 +7,7 @@ from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from .forms import TaskForm
 from .models import Task
+from django.utils import timezone
 
 
 def home(request):
@@ -27,7 +28,7 @@ def signup(request):
                     username=username, password=password1)
                 user.save()
                 login(request, user)
-                return redirect('task')
+                return redirect('tasks')
             except IntegrityError:
                 return render(request, 'signup.html', {
                     'form': UserCreationForm,
@@ -64,7 +65,7 @@ def signin(request):
             return redirect('home')
 
 
-def task(request):
+def tasks(request):
     tasks = Task.objects.filter(user=request.user, datecompleted__isnull=True)
     return render(request, 'task.html', {
         'tasks': tasks
@@ -81,7 +82,7 @@ def create_task(request):
             new_task = TaskForm(request.POST).save(commit=False)
             new_task.user = request.user
             new_task.save()
-            return redirect('task')
+            return redirect('tasks')
         except ValueError:
             return render(request, 'create_task.html', {
                 'form': TaskForm,
@@ -102,10 +103,25 @@ def task_detail(request, task_id):
             task = get_object_or_404(Task, pk=task_id, user=request.user)
             form = TaskForm(request.POST, instance=task)
             form.save()
-            return redirect('task')
+            return redirect('tasks')
         except ValueError:
             return render(request, 'task_detail.html', {
-            'task': task,
-            'form': form,
-            'error': "Error updating task"
+                'task': task,
+                'form': form,
+                'error': "Error updating task"
             })
+
+
+def task_complete(request, task_id):
+    task = get_object_or_404(Task, pk=task_id, user=request.user)
+    if request.method == 'POST':
+        task.datecompleted = timezone.now()
+        task.save()
+        return redirect('tasks')
+
+
+def task_delete(request, task_id):
+    task = get_object_or_404(Task, pk=task_id, user=request.user)
+    if request.method == 'POST':
+        task.delete()
+        return redirect('tasks')
