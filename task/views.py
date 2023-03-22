@@ -83,8 +83,12 @@ def tasks(request):
 @login_required
 def tasks_completed(request):
     tasks = Task.objects.filter(user=request.user, datecompleted__isnull=False).order_by('-datecompleted')
+    paginator = Paginator(tasks, 5)
+    
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     return render(request, 'task.html', {
-        'tasks': tasks
+        'tasks': page_obj
     })
 
 
