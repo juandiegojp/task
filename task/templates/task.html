@@ -1,4 +1,5 @@
 {% extends 'base.html' %} 
+{% load i18n %}
 
 {% block title %}Task{% endblock title %}
 
@@ -12,8 +13,9 @@
         {% else %}
         <a href="{% url 'task_detail' task.id %}">{{ task.title }}</a>
         {% endif %}
-        <em class="font-italic">{{ task.user.username }}</em>
-        <p>{{ task.datecompleted|date:'M j Y:i'}}</p>
+        {% language 'es' %}
+        <em class="font-italic">{{ task.datecompleted|date:'d M Y H:i'}}</em>
+        {% endlanguage %}
     </li>
     {% endfor %}
 </ul>
