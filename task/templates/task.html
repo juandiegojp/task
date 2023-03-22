@@ -8,9 +8,9 @@
     {% for task in tasks %}
     <li>
         {% if task.important %}
-        <i class="fa fa-check" aria-hidden="true"></i>{{ task.title }}
+        <a href="{% url 'task_detail' task.id %}"><i class="fa fa-check" aria-hidden="true"></i>{{ task.title }}</a>
         {% else %}
-        {{ task.title }}
+        <a href="{% url 'task_detail' task.id %}">{{ task.title }}</a>
         {% endif %}
         <em class="font-italic">{{ task.user.username }}</em>
     </li>
