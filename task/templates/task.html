@@ -8,11 +8,12 @@
     {% for task in tasks %}
     <li>
         {% if task.important %}
-        <a href="{% url 'task_detail' task.id %}"><i class="fa fa-check" aria-hidden="true"></i>{{ task.title }}</a>
+        <a href="{% url 'task_detail' task.id %}"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>{{ task.title }}</a>
         {% else %}
         <a href="{% url 'task_detail' task.id %}">{{ task.title }}</a>
         {% endif %}
         <em class="font-italic">{{ task.user.username }}</em>
+        <p>{{ task.datecompleted|date:'M j Y:i'}}</p>
     </li>
     {% endfor %}
 </ul>

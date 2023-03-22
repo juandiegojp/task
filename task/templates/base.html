@@ -26,21 +26,18 @@
       <div
         class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl px-4 md:px-6 py-2.5"
       >
-        <a href="/"><i class="fa fa-fw fa-home"></i>Home</a>
-        <a href="/task/create"> <i class="fa fa-plus" aria-hidden="true"></i>Nueva tarea</a>
-        <a href="/tasks"><i class="fa fa-thumb-tack" aria-hidden="true"></i>Pendientes</a>
-        <div class="justify-around">
-          {% if user.is_authenticated %}
+        <a href=" {% url 'home' %} "><i class="fa fa-fw fa-home"></i>Home</a>
+        {% if user.is_authenticated %}
+          <a href=" {% url 'create_task' %} "> <i class="fa fa-plus" aria-hidden="true"></i>Nueva tarea</a>
+          <a href=" {% url 'tasks' %} "><i class="fa fa-thumb-tack" aria-hidden="true"></i>Pendientes</a>
+          <a href=" {% url 'task_completed' %} "><i class="fa fa-check" aria-hidden="true"></i>Completadas</a>
+          <div class="justify-around">
           <a href="#"><i class="fa fa-fw fa-user"></i>{{ user.username }}</a>
-          <a
-            href="/logout"
-            class="text-sm font-medium text-red-600 dark:text-red-500 hover:underline"
-          >
-            <i class="fa fa-sign-out" aria-hidden="true"></i>Log Out</a
-          >
-          {% else %}
-          <a href="/signup"> <i class="fa fa-fw fa-user"></i>Sign up</a>
-          <a href="/signin">Sign in</a>
+          <a href=" {% url 'logout' %} " class="text-sm font-medium text-red-600 dark:text-red-500 hover:underline"><i class="fa fa-sign-out" aria-hidden="true"></i>Log Out</a>
+        {% else %}
+          <div class="justify-around">
+          <a href=" {% url 'signup' %} "> <i class="fa fa-fw fa-user"></i>Sign up</a>
+          <a href=" {% url 'signin' %} ">Sign in</a>
           {% endif %}
         </div>
       </div>
