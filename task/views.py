@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.contrib.auth import login, logout, authenticate
 from django.shortcuts import render, redirect
 from django.db import IntegrityError
+from .forms import TaskForm
 
 
 def home(request):
@@ -63,3 +64,8 @@ def signin(request):
 
 def task(request):
     return render(request, 'task.html')
+
+def create_task(request):
+    return render(request, 'create_task.html', {
+        'form' : TaskForm 
+    })
