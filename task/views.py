@@ -180,23 +180,28 @@ def task_delete(request, task_id):
 
 @login_required
 def g_PDF(request, task_id):
-    task = get_object_or_404(Task, pk=task_id, user=request.user)
     buffer = io.BytesIO()
     p = canvas.Canvas(buffer, pagesize=letter, bottomup=0)
     textob = p.beginText()
     textob.setTextOrigin(inch, inch)
     textob.setFont('Helvetica', 14)
-    lines = {
-        'Titulo': task.title,
-        'Descripcion': task.descripcion,
-        'Finalizó': task.datecompleted,
-    }
     
-    for l in lines.values:
-        textob.textLine(l)
+    task = Task.objects.all().filter(pk=task_id, user=request.user)
+    
+    lines = []
+    
+    for t in task:
+        lines.append(str(t.title))
+        lines.append(str(t.descripcion))
+        lines.append(str(t.datecompleted.strftime("%Y-%m-%d")))
+    
+    for line in lines:
+        textob.textLine(line)
+    
     p.drawText(textob)
     p.showPage()
     p.save()
     buffer.seek(0)
     return FileResponse(buffer, as_attachment=True, filename='hello.pdf')
+
 
