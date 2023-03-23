@@ -21,6 +21,7 @@ urlpatterns = [
     path('', views.home, name="home"),
     path('tasks/', views.tasks, name="tasks"),
     path('tasks/completed/', views.tasks_completed, name="task_completed"),
+    path('tasks/<int:task_id>/pdf', views.g_PDF, name="generatePDF"),
     path('task/create', views.create_task, name="create_task"),
     path('task/<int:task_id>/', views.task_detail, name="task_detail"),
     path('task/<int:task_id>/complete', views.task_complete, name="task_complete"),

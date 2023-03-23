@@ -29,7 +29,8 @@
           >
             Update
           </a>
-          </form>
+        </form>
+        <a href="{% url 'generatePDF' task.id %}">PDF</a>
     </div>
     {% else %}
         <li>

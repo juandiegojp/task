@@ -10,11 +10,17 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator #Paginacion
 #Calendario
 from datetime import datetime
-from django.views import generic
-from django.utils.safestring import mark_safe
 
 from .models import * #Importa todos los modelos
 from .forms import TaskForm #forms.py
+
+#Generate PDF
+import io
+from django.http import FileResponse
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import inch
+from reportlab.lib.pagesizes import letter
+
 
 def home(request):
     all_events = Event.objects.all()
@@ -171,17 +177,26 @@ def task_delete(request, task_id):
         task.delete()
         return redirect('tasks')
 
-def event(request):
-    all_events = Task.objects.all()
 
-    # if filters applied then get parameter and filter based on condition else return object
-    if request.GET:  
-        event_arr = []
-        all_events = Task.objects.all()
-        
-        for i in all_events:
-            event_sub_arr = {}
-            event_sub_arr['title'] = i.title
-            event_arr.append(event_sub_arr)
-        return HttpResponse(json.dumps(event_arr), content_type="application/json")
-    return render(request,'home.html', {"events":all_events,})
+@login_required
+def g_PDF(request, task_id):
+    task = get_object_or_404(Task, pk=task_id, user=request.user)
+    buffer = io.BytesIO()
+    p = canvas.Canvas(buffer, pagesize=letter, bottomup=0)
+    textob = p.beginText()
+    textob.setTextOrigin(inch, inch)
+    textob.setFont('Helvetica', 14)
+    lines = {
+        'Titulo': task.title,
+        'Descripcion': task.descripcion,
+        'Finalizó': task.datecompleted,
+    }
+    
+    for l in lines.values:
+        textob.textLine(l)
+    p.drawText(textob)
+    p.showPage()
+    p.save()
+    buffer.seek(0)
+    return FileResponse(buffer, as_attachment=True, filename='hello.pdf')
+
