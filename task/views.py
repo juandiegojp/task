@@ -1,18 +1,39 @@
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+import json
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm #Formularios
 from django.contrib.auth.models import User
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import login, logout, authenticate
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import IntegrityError
-from .forms import TaskForm
-from .models import Task
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator #Paginacion
+#Calendario
+from datetime import datetime
+from django.views import generic
+from django.utils.safestring import mark_safe
 
+from .models import * #Importa todos los modelos
+from .forms import TaskForm #forms.py
 
 def home(request):
-    return render(request, 'home.html')
+    all_events = Event.objects.all()
+
+    # if filters applied then get parameter and filter based on condition else return object
+    if request.GET:  
+        event_arr = []
+        all_events = Event.objects.all()
+        
+        for i in all_events:
+            event_sub_arr = {}
+            event_sub_arr['title'] = i.title
+            start_date = datetime.strptime(str(i.start_time.date()), "%Y-%m-%d").strftime("%Y-%m-%d")
+            end_date = datetime.strptime(str(i.end_time.date()), "%Y-%m-%d").strftime("%Y-%m-%d")
+            event_sub_arr['start'] = start_date
+            event_sub_arr['end'] = end_date
+            event_arr.append(event_sub_arr)
+        return HttpResponse(json.dumps(event_arr), content_type="application/json")
+    return render(request,'home.html', {"events":all_events,})
 
 
 def signup(request):
@@ -149,3 +170,18 @@ def task_delete(request, task_id):
     if request.method == 'POST':
         task.delete()
         return redirect('tasks')
+
+def event(request):
+    all_events = Task.objects.all()
+
+    # if filters applied then get parameter and filter based on condition else return object
+    if request.GET:  
+        event_arr = []
+        all_events = Task.objects.all()
+        
+        for i in all_events:
+            event_sub_arr = {}
+            event_sub_arr['title'] = i.title
+            event_arr.append(event_sub_arr)
+        return HttpResponse(json.dumps(event_arr), content_type="application/json")
+    return render(request,'home.html', {"events":all_events,})

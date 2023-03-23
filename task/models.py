@@ -16,9 +16,11 @@ class Task(models.Model):
     def __str__(self):
         return f'{self.title} - {self.user.username}'
 
-class Events(models.Model):
+class Event(models.Model):
     title = models.CharField(max_length=100)
-    endtime = models.DateTimeField(auto_now_add=True)
+    description = models.TextField()
+    start_time = models.DateTimeField('a')
+    end_time = models.DateTimeField('b')
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE
